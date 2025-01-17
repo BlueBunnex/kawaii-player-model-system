@@ -9,12 +9,12 @@
   "icon": "assets/kpms/icon.png",
   "environment": "*",
   "entrypoints": {
-    "stationapi:event_bus": [ "net.bluebunnex.kpms.KPMS" ],
+    "stationapi:event_bus": [],
     "stationapi:event_bus_client": [],
     "stationapi:event_bus_server": []
   },
   "mixins": [
-    "template.mixins.json"
+    "kpms.mixins.json"
   ],
   "depends": {
     "minecraft": "1.0.0-beta.7.3"
