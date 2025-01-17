@@ -3,25 +3,10 @@ package net.bluebunnex.kpms;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import org.spongepowered.include.com.google.gson.stream.JsonReader;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 
 public class KawaiiModel extends BipedEntityModel {
-
-//    {
-//        "texture": "texture.png",
-//        "head": {
-//            "pivotXYZ": [0, 0, 0],
-//            "parts": {
-//                "size": [10, 10, 10],
-//                "uv": [0,0],
-//                "uvMirror": false,
-//                "localXYZ": [0, 0, 0],
-//                "baseRotationPRY": [0, 0, 0]
-//            }
-//        }
-//        ...
-//    }
 
     public KawaiiModel() {
         super();
@@ -30,9 +15,24 @@ public class KawaiiModel extends BipedEntityModel {
         // cuboid position = local space (relative to pivot)
 
         try {
-            // run/.
-            System.out.println(new JsonReader(new FileReader("kpms/local_model.json")));
-        } catch (FileNotFoundException e) {
+            // located in "run/."
+            JsonReader reader = new JsonReader(new FileReader("kpms/local_model.json"));
+
+            reader.beginObject();
+
+            while (reader.hasNext()) {
+                String key = reader.nextName();
+
+                reader.skipValue();
+//                switch (key) {
+//                    case "texture":
+//                }
+                System.out.println(key);
+            }
+
+            reader.endObject();
+
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
