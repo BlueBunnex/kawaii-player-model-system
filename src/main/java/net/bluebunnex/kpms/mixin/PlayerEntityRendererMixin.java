@@ -1,7 +1,6 @@
 package net.bluebunnex.kpms.mixin;
 
 import net.bluebunnex.kpms.KawaiiModel;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import org.spongepowered.asm.mixin.Mixin;
