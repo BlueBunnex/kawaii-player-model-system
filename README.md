@@ -19,5 +19,10 @@ reads a json file that has model info for each body part, which are then animate
 }
 ```
 
-Keys explanation:
-- **Animation**: Represents _. Accepted animation values are `head, body, rightArm, leftArm, rightLeg, leftLeg`
+- **texture**:
+- **parts**:
+  - **animation**: Represents _. Accepted values are `head, body, rightArm, leftArm, rightLeg, leftLeg`
+  - **pivot**:
+  - **uv**:
+  - **uvMirror**:
+  - **cuboid**:
