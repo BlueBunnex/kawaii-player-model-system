@@ -10,6 +10,7 @@ reads a json file that has model info for each body part, which are then animate
     {
       "animation": <string>,
       "pivot": [<double>, <double>, <double>],
+      "rotation": [<double>, <double>, <double>],
       "uv": [<int>, <int>],
       "uvMirror": <boolean>,
       "cuboid": [<double>, <double>, <double>, <int>, <int>, <int>]
@@ -19,10 +20,14 @@ reads a json file that has model info for each body part, which are then animate
 }
 ```
 
+pivot position = global space
+cuboid position = local space (relative to pivot)
+
 - **texture**:
 - **parts**:
   - **animation**: Represents _. Accepted values are `head, body, rightArm, leftArm, rightLeg, leftLeg`
   - **pivot**:
+  - **rotation**: Rotation before animation.
   - **uv**:
   - **uvMirror**:
   - **cuboid**:
