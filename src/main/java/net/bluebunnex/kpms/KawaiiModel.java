@@ -79,7 +79,7 @@ public class KawaiiModel extends BipedEntityModel {
             String key = json.nextName();
 
             switch (key) {
-                case "pivotXYZ":
+                case "pivot":
                     json.beginArray();
                     part.setPivot(
                             (float) json.nextDouble(),
@@ -99,9 +99,17 @@ public class KawaiiModel extends BipedEntityModel {
                     part.mirror = json.nextBoolean();
                     break;
 
-                case "cuboids":
-                    part.addCuboid(-5.0F, 0.0F, -1.0F, 10, 16, 1);
-                    json.skipValue();
+                case "cuboid":
+                    json.beginArray();
+                    part.addCuboid(
+                            (float) json.nextDouble(),
+                            (float) json.nextDouble(),
+                            (float) json.nextDouble(),
+                            json.nextInt(),
+                            json.nextInt(),
+                            json.nextInt()
+                    );
+                    json.endArray();
                     break;
 
                 default:

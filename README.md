@@ -5,23 +5,19 @@ reads a json file that has model info for each body part, which are then animate
 ## Format
 ```
 {
-  "texture": "texture.png",
-  "head": {
-    "pivotXYZ": [0, 0, 0],
-    "uv": [0, 0],
-    "uvMirror": false,
-    "cuboids": [
-      {
-        "size": [10, 10, 10],
-        "localXYZ": [0, 0, 0]
-      }
-    ]
-  }
-  [OTHER KEYS HERE]
+  "texture": <string>,
+  "parts": [
+    {
+      "animation": <string>,
+      "pivot": [<double>, <double>, <double>],
+      "uv": [<int>, <int>],
+      "uvMirror": <boolean>,
+      "cuboid": [<double>, <double>, <double>, <int>, <int>, <int>]
+    }
+    ...
+  ]
 }
 ```
 
-"parts":
-"animation": "head"
-
-Accepted keys are `head, body, rightArm, leftArm, rightLeg, leftLeg`. They can be omitted.
+Keys explanation:
+- **Animation**: Represents _. Accepted animation values are `head, body, rightArm, leftArm, rightLeg, leftLeg`
