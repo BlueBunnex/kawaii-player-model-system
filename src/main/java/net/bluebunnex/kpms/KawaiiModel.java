@@ -107,8 +107,6 @@ public class KawaiiModel extends BipedEntityModel {
                 default:
                     json.skipValue();
             }
-
-            System.out.println(key);
         }
 
         json.endObject();
@@ -130,64 +128,101 @@ public class KawaiiModel extends BipedEntityModel {
         for (KawaiiModelPart part : parts) {
 
             part.pitch = part.basePitch;
-            part.roll  = part.baseRoll;
-            part.yaw   = part.baseYaw;
+            part.roll = part.baseRoll;
+            part.yaw = part.baseYaw;
+
+            part.pivotX = part.baseX;
+            part.pivotY = part.baseY;
+            part.pivotZ = part.baseZ;
 
             switch (part.animationType) {
 
                 case "head":
                     part.yaw += headYaw / 57.295776F;
                     part.pitch += headPitch / 57.295776F;
+
+                    if (this.sneaking)
+                        part.pivotY += 1.0F;
+
                     break;
 
                 case "body":
+                    if (this.sneaking)
+                        part.pitch += 0.5F;
                     break;
 
                 case "rightArm":
+                    part.pitch = MathHelper.cos(limbAngle * 0.6662F + 3.1415927F) * 2.0F * limbDistance * 0.5F;
+
+                    part.roll += MathHelper.cos(animationProgress * 0.09F) * 0.05F + 0.05F;
+                    part.pitch += MathHelper.sin(animationProgress * 0.067F) * 0.05F;
+
+                    if (this.rightArmPose)
+                        part.pitch = part.pitch * 0.5F - 0.31415927F;
+
+                    if (this.riding)
+                        part.pitch += -0.62831855F;
+
+                    if (this.sneaking)
+                        part.pitch += 0.4F;
+
                     break;
 
                 case "leftArm":
+                    part.pitch = MathHelper.cos(limbAngle * 0.6662F) * 2.0F * limbDistance * 0.5F;
+
+                    part.roll -= MathHelper.cos(animationProgress * 0.09F) * 0.05F + 0.05F;
+                    part.pitch -= MathHelper.sin(animationProgress * 0.067F) * 0.05F;
+
+                    if (this.leftArmPose)
+                        part.pitch = part.pitch * 0.5F - 0.31415927F;
+
+                    if (this.riding)
+                        part.pitch += -0.62831855F;
+
+                    if (this.sneaking)
+                        part.pitch += 0.4F;
+
                     break;
 
                 case "rightLeg":
+                    part.pitch = MathHelper.cos(limbAngle * 0.6662F) * 1.4F * limbDistance;
+
+                    if (this.riding) {
+                        part.pitch = -1.2566371F;
+                        part.yaw = 0.31415927F;
+                    }
+
+                    if (this.sneaking) {
+                        part.pivotZ += 4.0F;
+                        part.pivotY -= 3F;
+                    }
+
                     break;
 
                 case "leftLeg":
+                    part.pitch = MathHelper.cos(limbAngle * 0.6662F + 3.1415927F) * 1.4F * limbDistance;
+
+                    if (this.riding) {
+                        part.pitch = -1.2566371F;
+                        part.yaw = -0.31415927F;
+                    }
+
+                    if (this.sneaking) {
+                        part.pivotZ += 4.0F;
+                        part.pivotY -= 3F;
+                    }
+
                     break;
             }
         }
 
-        this.rightArm.pitch = MathHelper.cos(limbAngle * 0.6662F + 3.1415927F) * 2.0F * limbDistance * 0.5F;
-        this.leftArm.pitch = MathHelper.cos(limbAngle * 0.6662F) * 2.0F * limbDistance * 0.5F;
-        this.rightArm.roll = 0.0F;
-        this.leftArm.roll = 0.0F;
-        this.rightLeg.pitch = MathHelper.cos(limbAngle * 0.6662F) * 1.4F * limbDistance;
-        this.leftLeg.pitch = MathHelper.cos(limbAngle * 0.6662F + 3.1415927F) * 1.4F * limbDistance;
-        this.rightLeg.yaw = 0.0F;
-        this.leftLeg.yaw = 0.0F;
-        ModelPart var10000;
-        if (this.riding) {
-            var10000 = this.rightArm;
-            var10000.pitch += -0.62831855F;
-            var10000 = this.leftArm;
-            var10000.pitch += -0.62831855F;
-            this.rightLeg.pitch = -1.2566371F;
-            this.leftLeg.pitch = -1.2566371F;
-            this.rightLeg.yaw = 0.31415927F;
-            this.leftLeg.yaw = -0.31415927F;
-        }
 
-        if (this.leftArmPose) {
-            this.leftArm.pitch = this.leftArm.pitch * 0.5F - 0.31415927F;
-        }
-
-        if (this.rightArmPose) {
-            this.rightArm.pitch = this.rightArm.pitch * 0.5F - 0.31415927F;
-        }
-
-        this.rightArm.yaw = 0.0F;
-        this.leftArm.yaw = 0.0F;
+        //
         if (this.handSwingProgress > -9990.0F) {
+
+            ModelPart var10000;
+
             float var7 = this.handSwingProgress;
             this.body.yaw = MathHelper.sin(MathHelper.sqrt(var7) * 3.1415927F * 2.0F) * 0.2F;
             this.rightArm.pivotZ = MathHelper.sin(this.body.yaw) * 5.0F;
@@ -198,7 +233,6 @@ public class KawaiiModel extends BipedEntityModel {
             var10000.yaw += this.body.yaw;
             var10000 = this.leftArm;
             var10000.yaw += this.body.yaw;
-            var10000 = this.leftArm;
             var10000.pitch += this.body.yaw;
             var7 = 1.0F - this.handSwingProgress;
             var7 *= var7;
@@ -213,38 +247,7 @@ public class KawaiiModel extends BipedEntityModel {
             this.rightArm.roll = MathHelper.sin(this.handSwingProgress * 3.1415927F) * -0.4F;
         }
 
-        if (this.sneaking) {
-            this.body.pitch = 0.5F;
-            var10000 = this.rightLeg;
-            var10000.pitch -= 0.0F;
-            var10000 = this.leftLeg;
-            var10000.pitch -= 0.0F;
-            var10000 = this.rightArm;
-            var10000.pitch += 0.4F;
-            var10000 = this.leftArm;
-            var10000.pitch += 0.4F;
-            this.rightLeg.pivotZ = 4.0F;
-            this.leftLeg.pivotZ = 4.0F;
-            this.rightLeg.pivotY = 9.0F;
-            this.leftLeg.pivotY = 9.0F;
-            this.head.pivotY = 1.0F;
-        } else {
-            this.body.pitch = 0.0F;
-            this.rightLeg.pivotZ = 0.0F;
-            this.leftLeg.pivotZ = 0.0F;
-            this.rightLeg.pivotY = 12.0F;
-            this.leftLeg.pivotY = 12.0F;
-            this.head.pivotY = 0.0F;
-        }
-
-        var10000 = this.rightArm;
-        var10000.roll += MathHelper.cos(animationProgress * 0.09F) * 0.05F + 0.05F;
-        var10000 = this.leftArm;
-        var10000.roll -= MathHelper.cos(animationProgress * 0.09F) * 0.05F + 0.05F;
-        var10000 = this.rightArm;
-        var10000.pitch += MathHelper.sin(animationProgress * 0.067F) * 0.05F;
-        var10000 = this.leftArm;
-        var10000.pitch -= MathHelper.sin(animationProgress * 0.067F) * 0.05F;
+        super.setAngles(limbAngle, limbDistance, animationProgress, headYaw, headPitch, scale);
     }
 
     @Override
