@@ -14,46 +14,39 @@ public class KawaiiModel extends BipedEntityModel {
     public String texture;
     public ArrayList<KawaiiModelPart> parts;
 
-    public KawaiiModel() {
+    public KawaiiModel() throws IOException {
         super();
 
-        this.parts = new ArrayList<KawaiiModelPart>();
+        this.parts = new ArrayList<>();
 
-        try {
-            // located in "run/."
-            JsonReader json = new JsonReader(new FileReader("kpms/local_model.json"));
+        JsonReader json = new JsonReader(new FileReader("kpms/local_model.json")); // located in "run/."
 
-            json.beginObject();
+        json.beginObject();
 
-            while (json.hasNext()) {
-                String key = json.nextName();
+        while (json.hasNext()) {
 
-                switch (key) {
-                    case "texture":
-                        this.texture = json.nextString();
-                        break;
+            String key = json.nextName();
 
-                    case "parts":
-                        json.beginArray();
+            if (key.equals("texture")) {
 
-                        while (json.hasNext())
-                            this.parts.add(readPart(json));
+                this.texture = json.nextString();
 
-                        json.endArray();
-                        break;
+            } else if (key.equals("parts")) {
 
-                    default:
-                        json.skipValue();
-                }
+                json.beginArray();
 
-                System.out.println(key);
+                while (json.hasNext())
+                    this.parts.add(readPart(json));
+
+                json.endArray();
+
+            } else {
+
+                json.skipValue();
             }
-
-            json.endObject();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
+
+        json.endObject();
     }
 
     private static KawaiiModelPart readPart(JsonReader json) throws IOException {
@@ -82,9 +75,9 @@ public class KawaiiModel extends BipedEntityModel {
 
                 case "rotation":
                     json.beginArray();
-                    part.pitch = (float) json.nextDouble();
-                    part.roll  = (float) json.nextDouble();
-                    part.yaw   = (float) json.nextDouble();
+                    part.basePitch = (float) json.nextDouble();
+                    part.baseRoll  = (float) json.nextDouble();
+                    part.baseYaw   = (float) json.nextDouble();
                     json.endArray();
                     break;
 
@@ -125,7 +118,7 @@ public class KawaiiModel extends BipedEntityModel {
 
     @Override
     public void render(float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch, float scale) {
-        //this.setAngles(limbAngle, limbDistance, animationProgress, headYaw, headPitch, scale);
+        this.setAngles(limbAngle, limbDistance, animationProgress, headYaw, headPitch, scale);
 
         for (KawaiiModelPart part : parts)
             part.render(scale);
@@ -133,10 +126,37 @@ public class KawaiiModel extends BipedEntityModel {
 
     @Override
     public void setAngles(float limbAngle, float limbDistance, float animationProgress, float headYaw, float headPitch, float scale) {
-        this.head.yaw = headYaw / 57.295776F;
-        this.head.pitch = headPitch / 57.295776F;
-        this.hat.yaw = this.head.yaw;
-        this.hat.pitch = this.head.pitch;
+
+        for (KawaiiModelPart part : parts) {
+
+            part.pitch = part.basePitch;
+            part.roll  = part.baseRoll;
+            part.yaw   = part.baseYaw;
+
+            switch (part.animationType) {
+
+                case "head":
+                    part.yaw += headYaw / 57.295776F;
+                    part.pitch += headPitch / 57.295776F;
+                    break;
+
+                case "body":
+                    break;
+
+                case "rightArm":
+                    break;
+
+                case "leftArm":
+                    break;
+
+                case "rightLeg":
+                    break;
+
+                case "leftLeg":
+                    break;
+            }
+        }
+
         this.rightArm.pitch = MathHelper.cos(limbAngle * 0.6662F + 3.1415927F) * 2.0F * limbDistance * 0.5F;
         this.leftArm.pitch = MathHelper.cos(limbAngle * 0.6662F) * 2.0F * limbDistance * 0.5F;
         this.rightArm.roll = 0.0F;
